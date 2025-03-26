@@ -1,3 +1,6 @@
+# Portions of this file were adapted from [BivariateBicycleCodes] 
+# (https://github.com/sbravyi/BivariateBicycleCodes/tree/main) licensed under the Apache License 2.0.
+
 import numpy as np
 from mip import Model, xsum, minimize, BINARY
 from bposd.css import css_code
