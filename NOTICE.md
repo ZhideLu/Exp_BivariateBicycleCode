@@ -1,0 +1,1 @@
+This software includes code derived from [BivariateBicycleCodes] (https://github.com/sbravyi/BivariateBicycleCodes/tree/main)  licensed under the Apache License, Version 2.0.
