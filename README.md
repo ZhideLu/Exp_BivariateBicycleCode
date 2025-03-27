@@ -8,11 +8,6 @@ Utilizing a two-dimensional architecture with overlapping long-range couplers, w
 
 Here, we provide the codes for exprimental data analysis and classical simulation and the data for experimental results and simulation results.
 
-## Contents
-
-- [Numerical Simulations](Numerical_Simulations)
-- [Experimental Results](Experimental_Results)
-
 ## The numerical simulations are built With
 
 * [LDPC](https://github.com/quantumgizmos/ldpc) - A package for decoding quantum error correction codes in Python language
