@@ -10,8 +10,9 @@ Here, we provide the codes for exprimental data analysis and classical simulatio
 
 ## The numerical simulations are built With
 
-* [LDPC](https://github.com/quantumgizmos/ldpc) - A package for decoding quantum error correction codes in Python language
-* [bposd](https://pypi.org/project/bposd/) - A decoder for quantum LDPC codes
+* [Python](https://www.python.org/) - Version 3.10.14
+* [LDPC](https://github.com/quantumgizmos/ldpc) - Version 0.1.53, a package for decoding quantum error correction codes in Python language
+* [bposd](https://pypi.org/project/bposd/) - Version 1.6, a decoder for quantum LDPC codes
 
 ## Acknowledgments
 
