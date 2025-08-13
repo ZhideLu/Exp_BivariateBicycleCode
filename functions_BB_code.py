@@ -1,6 +1,9 @@
 # Portions of this file were adapted from [BivariateBicycleCodes] 
 # (https://github.com/sbravyi/BivariateBicycleCodes/tree/main) licensed under the Apache License 2.0.
 
+# Without reset
+
+
 import numpy as np
 from mip import Model, xsum, minimize, BINARY
 from bposd.css import css_code
@@ -139,7 +142,7 @@ def get_SM_circuit_parallel( remove_X_list, remove_Z_list, lin_order, data_qubit
     for target in Zchecks:
         direction = sZ[t]
         control = nbs[(target,direction)]
-    
+        
         data_qubits_cnoted_in_this_round.append(control)
         cycle.append(('CZ',control,target))
         
@@ -1131,16 +1134,16 @@ def simulate_syndrome_Lz(num_trials, num_cycles, cycle_new, cycle_append, error_
     syndrome_history_Z = [] ;  final_logical_z_outcome = [] ;
     cycle_no_reset_repeated = (num_cycles-1) * cycle_new[2*n2-len(remove_X_list)-len(remove_Z_list):] + \
                 cycle_new[2*n2-len(remove_X_list)-len(remove_Z_list) : -2*n2] + cycle_append  ;
-
+    
     for trial in range(num_trials):
         circ = generate_noisy_circuit(error_rate_init, error_rate_idle, error_rate_H, error_rate_cz, \
                                       error_rate_meas, error_final, error_DD_phaseflip, error_DD_bitflip, cycle_no_reset_repeated)
-    
+        
         syndrome_history,state,syndrome_map,err_cnt = simulate_circuit_Lz(circ + cycle_new*num_end, lin_order, n, remove_X_list, remove_Z_list)
         assert(len(syndrome_history)== (int(n/2)-len(remove_Z_list)) * (num_cycles + num_end))
         state_data_qubits = [state[lin_order[q]] for q in data_qubits]
         syndrome_final_logical = (lz @ state_data_qubits) % 2  
-    
+
         syndrome_history_copy = syndrome_history.copy()
         # measurement_history --->  detection events
         if num_cycles == 1:
