@@ -2,12 +2,16 @@ from tools_for_pauli_plus import *
 
 basis_type = str(sys.argv[1]) ;
 num_cycles = int(sys.argv[2]) ;
-num_sim_samples = int(sys.argv[3]) ;
-error_rate_RO_to_Data = float(sys.argv[4]) ;
+
+samples_map = [None, 1000, 1800, 2500, 5000, 9000, 15000]
+num_sim_samples = samples_map[num_cycles] ;
+
+set_error_rate_RO_to_Data = {"Z":0.04, "X": 0.03} ;
+error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
 
 
 # num_level = 4 ;
-# error_cz_xeb = 0.0098 ;
+# error_cz_xeb = 0.0098 ; # 0.0073 + 0.0025  
 error_rate_init = 0.003 ;
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
@@ -18,10 +22,10 @@ error_crosstalk = 0.0025 ;
 data = loadmat("Exp_data/leak_matrix.mat"); leak_transit = data["leak_martix"]
 channel_cz = generate_channel_cz(leak_transit)  # CZ leakage, with higher-frequency qubit put in the front
 
-channel_sq = generate_channel_t(0.03)       # 30ns single-qubit gate
-channel_tq = generate_channel_t(0.105)      # 105ns two-qubit gate
-channel_DD = generate_channel_t(0.92)       # 920ns DD
-channel_idle = generate_channel_t(0.105)    # 105ns idle
+channel_sq = generate_channel_t(0.03, with_coherence="yes", with_heating="yes")       # 30ns single-qubit gate
+channel_tq = generate_channel_t(0.105, with_coherence="yes", with_heating="yes")      # 105ns two-qubit gate
+channel_DD = generate_channel_t(0.92, with_coherence="yes", with_heating="yes")       # 920ns DD
+channel_idle = generate_channel_t(0.105, with_coherence="yes", with_heating="yes")    # 105ns idle
 
 # Depolarized error for compensation
 error_rate_sq_com = error_rate_sq - (1 - channel_sq.get_prob_from_to(0, 0, 0))
