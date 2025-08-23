@@ -10,24 +10,22 @@ basis_type = str(sys.argv[1]) ;
 budget_component = str(sys.argv[2])  ;
 num_cycles = int(sys.argv[3]) ;
 
-
-set_error_rate_RO_to_Data = {"Z":0.04, "X": 0.03} ;
+set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
 error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
 
-samples_map = [None, 10000, 18000, 25000, 50000, 90000, 150000]
+samples_map = [None, 100000, 160000, 280000, 500000, 800000, 1500000]
 num_sim_samples = samples_map[num_cycles]
 #--------------------------------------------------------------------------------
 
 # num_level = 4 ;
 # error_cz_xeb = 0.0098;  # 0.0073 + 0.0025  
-error_rate_init = 0.003 ;
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
 error_rate_cz = 0.0073 ;
 error_crosstalk = 0.0025 ;
 
 # Physical error rates
-data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_martix"]
+data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
 channel_cz = generate_channel_cz(leak_transit)  # CZ leakage, with higher-frequency qubit put in the front
 
 # with_coherence: "yes" for with T1 T2, "no" for no T1 T2
@@ -70,10 +68,9 @@ if budget_component == "idle" :
     error_rate_idle_com = 0
     channel_idle = channel_idle = generate_channel_t(0.105, with_coherence="no", with_heating="yes")
 
-if budget_component == "initial_readout" :
-    error_rate_init = 0 ;
-    if num_cycles > 3:
-        num_sim_samples = 30000 ;
+if budget_component == "readout" :
+
+    num_sim_samples = 45000 ;
     check_three_meas_error = np.array([[1, 0, 0],
                                        [0, 1, 0],
                                        [0, 0, 1  ],
@@ -90,8 +87,7 @@ if budget_component == "Excess" :
 
 # Circuit for measuring stabilizers
 initial_pre = stim.Circuit()
-initial_pre.append("R", Xcheck + data_L + data_R + Zcheck)
-initial_pre.append( "X_ERROR", Xcheck + data_L + data_R + Zcheck, error_rate_init )  
+initial_pre.append("R", Xcheck + data_L + data_R + Zcheck) 
 if basis_type == "X":
     initial_pre.append("H", data_L + data_R ) ;
 #----------------------------------------------------------------------------------------------------------------------

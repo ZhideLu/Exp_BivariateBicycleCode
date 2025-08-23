@@ -33,7 +33,7 @@ error_rate_cz = 0.0073 ;
 error_crosstalk = 0.0025 ;
 
 # Physical error rates
-data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_martix"]
+data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
 channel_cz = generate_channel_t(0)  
 
 channel_sq = generate_channel_t(0)       # 30ns single-qubit gate

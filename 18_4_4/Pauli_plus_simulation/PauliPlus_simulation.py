@@ -3,34 +3,59 @@ from tools_for_pauli_plus import *
 basis_type = str(sys.argv[1]) ;
 num_cycles = int(sys.argv[2]) ;
 
-samples_map = [None, 1000, 1800, 2500, 5000, 9000, 15000]
+samples_map = [None, 100000, 160000, 280000, 500000, 800000, 300000]
 num_sim_samples = samples_map[num_cycles] ;
 
-set_error_rate_RO_to_Data = {"Z":0.04, "X": 0.03} ;
+set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
 error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
+
+
+set_T1 = { 0:44.7, 1:34.9, 2: 51.1, 3:45.3, 4:35.6, 5: 38.6, 6: 38.2,
+          7: 34.4, 8: 44.4, 9: 55.0, 10: 50.8, 11: 48.6, 12: 39.5, 13: 38.6, 14: 37.2, 15: 37.9,
+          16: 44.7, 17: 36.7, 18: 41.1, 19: 37.5, 20: 49.5, 21: 49.6, 22: 37.1, 23: 41.4, 24: 37.9,
+          25: 45.4, 26: 42.3, 27: 57.8, 28: 35.3, 29: 34.2, 30: 33.5, 31: 39.9 }
+
+set_Tphi = { 0: 21.0, 1: 55.1, 2: 13.8, 3: 17.0, 4: 29.6, 5: 26.1, 6: 63.4,
+            7: 109.8, 8: 95.6, 9: 15.4, 10: 42.6, 11: 24.3, 12: 17.1, 13: 62.8, 14: 53.1, 15: 23.3,
+            16: 17.9, 17: 18.0, 18: 41.4, 19: 14.7, 20: 64.1, 21: 69.2, 22: 44.5, 23: 52.5, 24: 54.2,
+            25: 23.1, 26: 26.3, 27: 29.5, 28: 20.0, 29: 50.2, 30: 33.8, 31: 42.6 } ;
+
+T1_ave = 41.8 ; Tphi_ave = 39.7
+
+
+dict_channel_sq   = {}
+dict_channel_tq   = {}
+dict_channel_DD   = {}
+dict_channel_idle = {} ;
+
+for i in range(num_qubits):
+    dict_channel_sq[i] = generate_channel_t(t_gate = 0.03, with_coherence="yes", with_heating="yes", T1 = set_T1[i], Tphi = set_Tphi[i] )
+    dict_channel_tq[i] = generate_channel_t(t_gate = 0.105, with_coherence="yes", with_heating="yes",T1 =  set_T1[i], Tphi = set_Tphi[i] )
+    dict_channel_DD[i] = generate_channel_t(t_gate = 0.92, with_coherence="yes", with_heating="yes", T1 = set_T1[i], Tphi = set_Tphi[i] )
+    dict_channel_idle[i] = generate_channel_t(t_gate = 0.105, with_coherence="yes", with_heating="yes", T1 = set_T1[i], Tphi = set_Tphi[i] )
 
 
 # num_level = 4 ;
 # error_cz_xeb = 0.0098 ; # 0.0073 + 0.0025  
-error_rate_init = 0.003 ;
+error_rate_init = 0.003
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
 error_rate_cz = 0.0073 ;
 error_crosstalk = 0.0025 ;
 
 # Physical error rates
-data = loadmat("Exp_data/leak_matrix.mat"); leak_transit = data["leak_martix"]
+data = loadmat("Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
 channel_cz = generate_channel_cz(leak_transit)  # CZ leakage, with higher-frequency qubit put in the front
 
-channel_sq = generate_channel_t(0.03, with_coherence="yes", with_heating="yes")       # 30ns single-qubit gate
-channel_tq = generate_channel_t(0.105, with_coherence="yes", with_heating="yes")      # 105ns two-qubit gate
-channel_DD = generate_channel_t(0.92, with_coherence="yes", with_heating="yes")       # 920ns DD
-channel_idle = generate_channel_t(0.105, with_coherence="yes", with_heating="yes")    # 105ns idle
+ave_channel_sq = generate_channel_t( t_gate = 0.03, with_coherence="yes", with_heating="yes", T1 = T1_ave, Tphi = Tphi_ave )    
+ave_channel_tq = generate_channel_t( t_gate = 0.105, with_coherence="yes", with_heating="yes", T1 = T1_ave, Tphi = Tphi_ave )     
+ave_channel_DD = generate_channel_t( t_gate = 0.92, with_coherence="yes", with_heating="yes", T1 = T1_ave, Tphi = Tphi_ave )      
+ave_channel_idle = generate_channel_t( t_gate = 0.105, with_coherence="yes", with_heating="yes", T1 = T1_ave, Tphi = Tphi_ave )   
 
 # Depolarized error for compensation
-error_rate_sq_com = error_rate_sq - (1 - channel_sq.get_prob_from_to(0, 0, 0))
-error_rate_cz_com = error_rate_cz - (2 - 2 * channel_tq.get_prob_from_to(0, 0, 0) + 1 - channel_cz.get_prob_from_to(0, 0, 0) ) 
-error_rate_idle_com = error_rate_idle - (1 - channel_idle.get_prob_from_to(0, 0, 0))
+error_rate_sq_com = error_rate_sq - (1 - ave_channel_sq.get_prob_from_to(0, 0, 0))
+error_rate_cz_com = error_rate_cz - (2 - 2 * ave_channel_tq.get_prob_from_to(0, 0, 0) + 1 - channel_cz.get_prob_from_to(0, 0, 0) ) 
+error_rate_idle_com = error_rate_idle - (1 - ave_channel_idle.get_prob_from_to(0, 0, 0))
 
 #----------------------------------------------------------------------------------------------------------------------
 
@@ -63,19 +88,19 @@ Exp_circuit_logical = initial_pre + (SM_circuit + circuit_DD) * (num_cycles-1) +
 simulator = leaky.Simulator(num_qubits)
 
 for targets in range(num_qubits):
-    simulator.bind_leaky_channel(leaky.Instruction("Y", [targets]), channel_sq)
-    simulator.bind_leaky_channel(leaky.Instruction("X", [targets]), channel_sq)
-    simulator.bind_leaky_channel(leaky.Instruction("Z", [targets]), channel_sq)   
-    simulator.bind_leaky_channel(leaky.Instruction("SQRT_Y", [targets]), channel_sq)
+    simulator.bind_leaky_channel(leaky.Instruction("Y", [targets]), dict_channel_sq[targets])
+    simulator.bind_leaky_channel(leaky.Instruction("X", [targets]), dict_channel_sq[targets])
+    simulator.bind_leaky_channel(leaky.Instruction("Z", [targets]), dict_channel_sq[targets])   
+    simulator.bind_leaky_channel(leaky.Instruction("SQRT_Y", [targets]), dict_channel_sq[targets])
 
     #  qubit errors for DD
-    simulator.bind_leaky_channel(leaky.Instruction("SQRT_X", [targets]), channel_DD)
+    simulator.bind_leaky_channel(leaky.Instruction("SQRT_X", [targets]), dict_channel_DD[targets])
     
     # qubit errors for CZ
-    simulator.bind_leaky_channel(leaky.Instruction("S", [targets]), channel_tq)
+    simulator.bind_leaky_channel(leaky.Instruction("S", [targets]), dict_channel_tq[targets])
 
      # qubit errors for iding
-    simulator.bind_leaky_channel(leaky.Instruction("I", [targets]), channel_idle)
+    simulator.bind_leaky_channel(leaky.Instruction("I", [targets]), dict_channel_idle[targets])
 #----------------------------------------------------------------------------------------------------------------------
 # CZ leakage
 for target1, target2 in permutations(range(num_qubits), 2):
@@ -85,8 +110,8 @@ for target1, target2 in permutations(range(num_qubits), 2):
 # simulation
 #----------------------------------------------------------------------------------------------------------------------
 results_no_meas_error = simulator.sample_batch(Exp_circuit_logical, shots = num_sim_samples )
-index_no_leakage = np.all( (results_no_meas_error == 0) | (results_no_meas_error == 1), axis=1)
-np.sum(index_no_leakage)
+# index_no_leakage = np.all( (results_no_meas_error == 0) | (results_no_meas_error == 1), axis=1)
+# np.sum(index_no_leakage)
 # consider three-state readout errors
 results = apply_transition_2d(num_databits, results_no_meas_error, check_three_meas_error, data_three_meas_error)
 instance_no_leakage = np.all( (results == 0) | (results == 1), axis=1)

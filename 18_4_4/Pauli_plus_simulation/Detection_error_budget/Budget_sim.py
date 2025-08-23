@@ -5,27 +5,27 @@ sys.path.append(os.path.abspath("../../"))
 sys.path.append(os.path.abspath("../../.."))
 from tools_for_pauli_plus import *
 
-
 basis_type = str(sys.argv[1]) ;
 budget_component = str(sys.argv[2])  ;
 
-set_error_rate_RO_to_Data = {"Z":0.04, "X": 0.03} ;
-error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
+error_rate_excess = 0.035 ;
+
+# set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
+# error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
 
 num_cycles = 6 ;
-num_sim_samples = 250000 ;
+num_sim_samples = 1500000 ;
 
 
 # num_level = 4 ;
 # error_cz_xeb = 0.0098;  # 0.0073 + 0.0025  
-error_rate_init = 0.003 ;
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
 error_rate_cz = 0.0073 ;
 error_crosstalk = 0.0025 ;
 
 # Physical error rates
-data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_martix"]
+data = loadmat("../Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
 channel_cz = generate_channel_cz(leak_transit)  # CZ leakage, with higher-frequency qubit put in the front
 
 channel_sq = generate_channel_t(0.03, with_coherence="yes", with_heating="yes")       # 30ns single-qubit gate
@@ -66,9 +66,8 @@ if budget_component == "idle" :
     error_rate_idle_com = 0
     channel_idle = channel_idle = generate_channel_t(0.105, with_coherence="no", with_heating="yes")
 
-if budget_component == "initial_readout" :
-    error_rate_init = 0 ;
-    num_sim_samples = 30000 ;
+if budget_component == "readout" :
+    num_sim_samples = 45000 ;
     check_three_meas_error = np.array([[1, 0, 0],
                                        [0, 1, 0],
                                        [0, 0, 1  ],
@@ -80,13 +79,12 @@ if budget_component == "initial_readout" :
                                       [0, 0, 1]]) ;
     
 if budget_component == "Excess" :
-    error_rate_RO_to_Data = 0 
+    error_rate_excess = 0 
 #----------------------------------------------------------------------------------------------------------------------
 
 # Circuit for measuring stabilizers
 initial_pre = stim.Circuit()
 initial_pre.append("R", Xcheck + data_L + data_R + Zcheck)
-initial_pre.append( "X_ERROR", Xcheck + data_L + data_R + Zcheck, error_rate_init )  
 if basis_type == "X":
     initial_pre.append("H", data_L + data_R ) ;
 #----------------------------------------------------------------------------------------------------------------------
@@ -96,7 +94,7 @@ SM_circuit = get_SM_circuit(error_rate_sq_com, error_rate_cz_com, error_rate_idl
 circuit_DD = stim.Circuit()
 circuit_DD.append("SQRT_X_DAG", data_L + data_R)
 circuit_DD.append("SQRT_X", data_L + data_R)
-circuit_DD.append("DEPOLARIZE1", data_L + data_R, error_rate_RO_to_Data)
+circuit_DD.append("DEPOLARIZE1", data_L + data_R, error_rate_excess)
 #----------------------------------------------------------------------------------------------------------------------
 final = stim.Circuit()
 if basis_type == "X":
