@@ -3,11 +3,15 @@ from tools_for_pauli_plus import *
 basis_type = str(sys.argv[1]) ;
 num_cycles = int(sys.argv[2]) ;
 
+error_rate_RO_to_Data = float(sys.argv[3]) ;
+error_crosstalk_plus = float(sys.argv[4]) ;
+
+
 samples_map = [None, 100000, 160000, 280000, 500000, 800000, 300000]
 num_sim_samples = samples_map[num_cycles] ;
 
-set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
-error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
+# set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
+# error_rate_RO_to_Data = set_error_rate_RO_to_Data[basis_type] ;
 
 
 set_T1 = { 0:44.7, 1:34.9, 2: 51.1, 3:45.3, 4:35.6, 5: 38.6, 6: 38.2,
@@ -41,7 +45,7 @@ error_rate_init = 0.003
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
 error_rate_cz = 0.0073 ;
-error_crosstalk = 0.0025 ;
+error_crosstalk = 0.0025 + error_crosstalk_plus  ;
 
 # Physical error rates
 data = loadmat("Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
@@ -127,7 +131,7 @@ if basis_type == "Z":
     
     syndrome_history_Z, final_logical_z_outcome = Z_transfer_meas_to_detection(hz, lz, num_cycles, results_no_leakage, num_databits)
 
-    fname = './Numerical_data/' + 'Logical_Z_' + 'num_cycles_' + str(num_cycles) + '.mat'
+    fname = './Numerical_data/' + 'Logical_Z_' + 'num_cycles_' + str(num_cycles) + 'DD_plus' + str(error_rate_RO_to_Data) + 'cz_plus' + str(error_crosstalk_plus) + '.mat'
     savemat(fname, 
             { 'num_cycles': num_cycles, 
              'num_samples': num_sim_samples,
@@ -139,7 +143,7 @@ if basis_type == "X":
     
     syndrome_history_X, final_logical_x_outcome = X_transfer_meas_to_detection(hx, lx, num_cycles, results_no_leakage, num_databits)
 
-    fname = './Numerical_data/' + 'Logical_X_' + 'num_cycles_' + str(num_cycles) + '.mat'
+    fname = './Numerical_data/' + 'Logical_X_' + 'num_cycles_' + str(num_cycles) + 'DD_plus' + str(error_rate_RO_to_Data) + 'cz_plus' + str(error_crosstalk_plus) + '.mat'
     savemat(fname, 
             { 'num_cycles': num_cycles, 
              'num_samples': num_sim_samples,
