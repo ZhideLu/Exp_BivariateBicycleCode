@@ -260,7 +260,7 @@ def get_SM_circuit_parallel( remove_X_list, remove_Z_list, lin_order, data_qubit
 def get_SM_circuit_separate( remove_X_list, remove_Z_list, lin_order, data_qubits, Xchecks, Zchecks, nbs, sX, sZ ):
     cycle_new = [] ;
     # implement syndrome measurements using the circuit containing 12 layers of CZ gates
-    
+        
     for q in Xchecks:
         cycle_new.append(('X_Prep',q))
     for q in Zchecks:

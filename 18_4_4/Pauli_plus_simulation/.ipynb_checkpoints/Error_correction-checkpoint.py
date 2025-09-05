@@ -13,7 +13,7 @@ with open('../Set_decoder_para_18_4_4.pkl', 'rb') as f:
     Set_decoder_para_18_4_4 = pickle.load(f)
 
 my_bp_method = "ms"
-my_max_iter = 1300
+my_max_iter = 2000
 my_osd_method = "osd_cs"
 my_osd_order = 7
 my_ms_scaling_factor = 0

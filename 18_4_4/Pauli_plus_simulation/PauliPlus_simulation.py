@@ -3,11 +3,10 @@ from tools_for_pauli_plus import *
 basis_type = str(sys.argv[1]) ;
 num_cycles = int(sys.argv[2]) ;
 
-error_rate_RO_to_Data = float(sys.argv[3]) ;
-error_crosstalk_plus = float(sys.argv[4]) ;
+error_rate_excess = 0.03 ;
 
 
-samples_map = [None, 100000, 160000, 280000, 500000, 800000, 300000]
+samples_map = [None, 100000, 160000, 280000, 500000, 800000, 1500000]
 num_sim_samples = samples_map[num_cycles] ;
 
 # set_error_rate_RO_to_Data = {"Z":0.035, "X": 0.035} ;
@@ -41,11 +40,10 @@ for i in range(num_qubits):
 
 # num_level = 4 ;
 # error_cz_xeb = 0.0098 ; # 0.0073 + 0.0025  
-error_rate_init = 0.003
 error_rate_idle = 0.0035
 error_rate_sq = 0.0008 ;
 error_rate_cz = 0.0073 ;
-error_crosstalk = 0.0025 + error_crosstalk_plus  ;
+error_crosstalk = 0.0025 ;
 
 # Physical error rates
 data = loadmat("Exp_crosstalk_data/leak_matrix.mat"); leak_transit = data["leak_matrix"]
@@ -63,12 +61,11 @@ error_rate_idle_com = error_rate_idle - (1 - ave_channel_idle.get_prob_from_to(0
 
 #----------------------------------------------------------------------------------------------------------------------
 
-
 # Circuit for measuring stabilizers
 #----------------------------------------------------------------------------------------------------------------------
 initial_pre = stim.Circuit()
 initial_pre.append("R", Xcheck + data_L + data_R + Zcheck)
-initial_pre.append( "X_ERROR", Xcheck + data_L + data_R + Zcheck, error_rate_init )  
+# initial_pre.append( "X_ERROR", Xcheck + data_L + data_R + Zcheck, error_rate_init )  
 if basis_type == "X":
     initial_pre.append("H", data_L + data_R ) ;
 #----------------------------------------------------------------------------------------------------------------------
@@ -78,7 +75,7 @@ SM_circuit = get_SM_circuit(error_rate_sq_com, error_rate_cz_com, error_rate_idl
 circuit_DD = stim.Circuit()
 circuit_DD.append("SQRT_X_DAG", data_L + data_R)
 circuit_DD.append("SQRT_X", data_L + data_R)
-circuit_DD.append("DEPOLARIZE1", data_L + data_R, error_rate_RO_to_Data)
+circuit_DD.append("DEPOLARIZE1", data_L + data_R, error_rate_excess)
 #----------------------------------------------------------------------------------------------------------------------
 final = stim.Circuit()
 if basis_type == "X":
@@ -111,6 +108,7 @@ for target1, target2 in permutations(range(num_qubits), 2):
     simulator.bind_leaky_channel( leaky.Instruction("CZ", [target1, target2]), channel_cz )
 #----------------------------------------------------------------------------------------------------------------------
 
+
 # simulation
 #----------------------------------------------------------------------------------------------------------------------
 results_no_meas_error = simulator.sample_batch(Exp_circuit_logical, shots = num_sim_samples )
@@ -131,7 +129,7 @@ if basis_type == "Z":
     
     syndrome_history_Z, final_logical_z_outcome = Z_transfer_meas_to_detection(hz, lz, num_cycles, results_no_leakage, num_databits)
 
-    fname = './Numerical_data/' + 'Logical_Z_' + 'num_cycles_' + str(num_cycles) + 'DD_plus' + str(error_rate_RO_to_Data) + 'cz_plus' + str(error_crosstalk_plus) + '.mat'
+    fname = './Numerical_data/' + 'Logical_Z_' + 'num_cycles_' + str(num_cycles) + '.mat'
     savemat(fname, 
             { 'num_cycles': num_cycles, 
              'num_samples': num_sim_samples,
@@ -143,7 +141,7 @@ if basis_type == "X":
     
     syndrome_history_X, final_logical_x_outcome = X_transfer_meas_to_detection(hx, lx, num_cycles, results_no_leakage, num_databits)
 
-    fname = './Numerical_data/' + 'Logical_X_' + 'num_cycles_' + str(num_cycles) + 'DD_plus' + str(error_rate_RO_to_Data) + 'cz_plus' + str(error_crosstalk_plus) + '.mat'
+    fname = './Numerical_data/' + 'Logical_X_' + 'num_cycles_' + str(num_cycles) + '.mat'
     savemat(fname, 
             { 'num_cycles': num_cycles, 
              'num_samples': num_sim_samples,

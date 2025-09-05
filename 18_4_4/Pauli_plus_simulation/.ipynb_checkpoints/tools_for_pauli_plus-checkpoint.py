@@ -31,14 +31,17 @@ def f2(x): return 0 if x in [0, 1] else x-1
 
 ##-----------------------------------------------------------------------------------------------------------------------------------------
 # Decay, dephasing, and leakage heating
-def generate_channel_t(t_gate):
+def generate_channel_t(t_gate, with_coherence, with_heating, T1, Tphi):
     dim = 4
     a = destroy(dim)
     n = a.dag() * a
     
-    T1 = 41.8 ; 
-    Tphi = 39.7 ;
-    Gamma_12 = 1 / 1200 ;
+    if with_coherence == "yes" :
+        T1 = T1 ; Tphi = Tphi ;
+    if with_coherence == "no" :
+        T1 = 10**20 ; Tphi = 10**20 ;
+
+    Gamma_12 = 1 / 1200 if with_heating == "yes" else 0 ;
     
     c_ops = [
         np.sqrt(1/T1) * a,
@@ -53,7 +56,7 @@ def generate_channel_t(t_gate):
     eigvals, eigvecs = choi.eigenstates() ;
     kraus_ops = [] ;
     for k in range(len(eigvals)):
-        if eigvals[k] > 1e-15:  # 过滤小特征值
+        if eigvals[k] > 1e-15:  
             d = dim
             vec = eigvecs[k].full().reshape((d, d), order = "F")
             K = np.sqrt(eigvals[k]) * Qobj(vec)
