@@ -14,7 +14,7 @@ Here, we provide the codes for exprimental data analysis and classical simulatio
 * [Stim](https://github.com/quantumlib/Stim/tree/main) -Version 1.13.0, a tool for high performance simulation and analysis of  quantum error correction circuits ;
 * [LDPC](https://github.com/quantumgizmos/ldpc) - Version 0.1.53, a package for decoding quantum error correction codes in Python language ;
 * [bposd](https://pypi.org/project/bposd/) - Version 1.6, a decoder for quantum LDPC codes ;
-* [leaky](https://github.com/inmzhang/leaky) - Version 1.6, an implementation of Google's Pauli+ simulator ;
+* [leaky](https://github.com/inmzhang/leaky) - Version 0.2.2, an implementation of Google's Pauli+ simulator ;
 
 ## Acknowledgments
 
