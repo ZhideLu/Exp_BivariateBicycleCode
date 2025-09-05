@@ -2,7 +2,7 @@
 
 
 
-In our work [Demonstration of low-overhead quantum error correction codes], we report the demonstration of two low-overhead quantum low-density parity-check (qLDPC) codes [27], a distance-4 bivariate bicycle code and a distance-3 punctured bivariate bicycle code code, on our latest superconducting processor, Kunlun, featuring 32 long-range-coupled transmon qubits. 
+In our work [Demonstration of low-overhead quantum error correction codes], we report the demonstration of two low-overhead quantum low-density parity-check (qLDPC) codes, a distance-4 bivariate bicycle code and a distance-3 punctured bivariate bicycle code code, on our latest superconducting processor, Kunlun, featuring 32 long-range-coupled transmon qubits. 
 
 Utilizing a two-dimensional architecture with overlapping long-range couplers, we demonstrate simultaneous measurements of all nonlocal weight-6 stabilizers via periodic execution of an efficient syndrome extraction circuit. We achieve a logical error rate per logical qubit per cycle of (8.91 ± 0.17)% for the distance-4 bivariate bicycle code with four logical qubits and (7.77 ± 0.12)% for the distance-3 punctured bivariate bicycle code with six logical qubits.  Our results establish the feasibility of implementing various qLDPC codes with long-range coupled superconducting processors, marking a crucial step towards large-scale low-overhead quantum error correction.
 
