@@ -28,6 +28,8 @@ import os
 import sys
 
 ## decompose kraus operators into GPC
+# This function was oginigated from [leaky 0.2.2 package] (https://github.com/inmzhang/leaky) licensed under the Apache License 2.0.
+# I have rewritten it here with modifications to fit my use.
 def kraus_to_leaky_pauli_channel(
     kraus_operators: Sequence[np.ndarray],
     num_qubits: int,
