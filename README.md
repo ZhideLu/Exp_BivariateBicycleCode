@@ -52,8 +52,10 @@ These notebooks:
   - **Extended Data Fig.3**
   - **Fig.2b**, **Extended Data Fig.2**
 
+We note that this decoding step takes several hours to complete. If you wish to speed up the decoding, you may open the file "18_4_4/ErrorCorrection_for_experiment_18_4_4.py" or "18_6_3/ErrorCorrection_for_experiment_18_6_3.py" and reduce the value of "my_max_iter = 10000" to a smaller number.
 
 ## Pauli+ simulation 
+
 To simulate the experiment using the Pauli+ framework:
 
 - Run:
