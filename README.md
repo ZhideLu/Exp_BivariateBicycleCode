@@ -98,3 +98,16 @@ These notebooks produce the results in:
 
 ## Acknowledgments
 This project includes substantial portions of code derived from [BivariateBicycleCodes] (https://github.com/sbravyi/BivariateBicycleCodes/tree/main) which is licensed under the Apache License 2.0.
+
+## Funding
+
+We acknowledge support from the Quantum Science and Technology–National Science and Technology Major Project (grant numbers 2021ZD0300200 and 2021ZD0302203), the National Natural Science Foundation of China (grant numbers 92365301, 12174342, 12274367, 12322414, 12274368, 12075128, 12404570, 12404574, T2225008 and T24B2002), the Shanghai Qi Zhi Institute Innovation Program SQZ202318, the National Key R&D Program of China (grant number 2023YFB4502600) and the Zhejiang Provincial Natural Science Foundation of China (grant numbers LDQ23A040001 and LR24A040002). In addition, Z.-Z.S., W.L. and D.-L.D. are supported by Tsinghua University Dushi Program. P.-X.S. acknowledges support from the European Union’s Horizon Europe research and innovation programme under the Marie Skłodowska-Curie grant agreement number 101180589 (SymPhysAI), the National Science Centre (Poland) OPUS grant number 2021/41/B/ST3/04475 and the "MagTop" project (FENG.02.01-IP.05-0028/23) carried out within the "International Research Agendas" programme of the Foundation for Polish Science co-financed by the European Union under the European Funds for Smart Economy 2021-2027 (FENG). Views and opinions expressed are, however, those of the author(s) only and do not necessarily reflect those of the European Union or the European Research Executive Agency. Neither the European Union nor the granting authority can be held responsible for them.
+
+
+
+
+
+
+
+
+
